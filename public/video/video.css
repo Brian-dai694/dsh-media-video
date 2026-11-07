@@ -1,0 +1,145 @@
+/* Independent video editor surface; product register, compact and tool-focused. */
+/* Minimal shell keeps the native editor/state engine and its DOM controls intact. */
+:root{color-scheme:dark;--bg:#15181c;--surface:#1d2126;--surface-2:#252a30;--line:#343a41;--muted:#89929c;--text:#e5e9ed;--accent:#4fc6b7;--accent-soft:#203f3d;--warn:#e5b66b;--danger:#df7777;--radius:6px;font:14px/1.45 Inter,"Segoe UI","Microsoft YaHei",sans-serif}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);min-width:340px;height:100vh;overflow:hidden}button,input,textarea{font:inherit;color:inherit}button{cursor:pointer}button:disabled{opacity:.4;cursor:not-allowed}.topbar{height:58px;border-bottom:1px solid var(--line);display:flex;align-items:center;padding:0 22px;gap:30px;background:#191d21}.brand{font-weight:700;letter-spacing:.02em;color:var(--text);text-decoration:none;white-space:nowrap}.brand span{font:10px/1 monospace;color:var(--muted);margin-left:8px;letter-spacing:.12em}.project-name{display:grid;gap:1px;min-width:0}.project-name strong{font-size:13px}.project-name small{font-size:11px;color:var(--muted)}.top-actions{margin-left:auto;display:flex;gap:8px;align-items:center}.icon-btn,.tool-btn{border:1px solid transparent;background:transparent;color:#bec6cd;min-width:34px;height:32px;border-radius:var(--radius);display:inline-flex;align-items:center;justify-content:center;text-decoration:none}.icon-btn:hover,.tool-btn:hover{background:var(--surface-2);border-color:var(--line)}.export-btn,.primary-btn{border:0;border-radius:5px;background:var(--accent);color:#102321;padding:8px 14px;font-weight:700}.workspace{height:calc(100vh - 58px);display:grid;grid-template-columns:minmax(0,1fr) 304px;min-height:0}.viewer-column{padding:18px 22px 22px;display:flex;flex-direction:column;min-width:0;min-height:0}.viewer-head,.timeline-head{display:flex;align-items:center;justify-content:space-between;height:33px;margin-bottom:10px}.viewer-head>div{display:flex;align-items:baseline;gap:13px}.eyebrow{display:block;font:10px/1.2 monospace;text-transform:uppercase;letter-spacing:.1em;color:var(--muted)}.viewer-head #mediaLabel{font-size:12px;color:#c7cdd3}.live-state{font-size:11px;color:var(--muted);display:flex;gap:7px;align-items:center}.live-state i{width:6px;height:6px;background:var(--accent);border-radius:50%}.stage{position:relative;flex:1;min-height:180px;display:grid;place-items:center;background:#090b0d;border:1px solid #292e33;border-radius:var(--radius);overflow:hidden}#video{max-width:100%;max-height:100%;display:none;background:#050607}#overlayCanvas{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}.empty-stage[hidden]{display:none}.empty-stage{display:flex;flex-direction:column;align-items:center;gap:9px;color:var(--muted)}.empty-stage strong{color:#d7dde2;font-weight:600}.empty-stage span{font-size:12px}.clapper{font-size:35px;color:#5a716e;margin-bottom:3px}.primary-btn{margin-top:8px;cursor:pointer}.transport{height:52px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line)}.transport-left,.transport-right{display:flex;align-items:center;gap:9px}.round-btn{width:30px;height:30px;border-radius:50%;background:var(--surface-2);border:1px solid var(--line);font-size:11px}.timecode{font:12px/1 monospace;font-variant-numeric:tabular-nums}.timecode em{font-style:normal;color:#626b74;margin:0 5px}.tool-btn{padding:0 8px;font-size:16px}.tool-btn span{font-size:11px;margin-left:5px}.divider{height:18px;width:1px;background:var(--line);margin:0 4px}.timeline-head{margin:16px 0 7px}.timeline-title{font-size:12px;font-weight:650}.timeline-title span{font:11px monospace;color:var(--muted);margin-left:7px}.timeline-tools{display:flex;align-items:center}.text-btn{border:0;background:transparent;color:var(--muted);font-size:11px}.timeline{position:relative;min-height:142px;background:#191d21;border:1px solid #30363c;border-radius:5px;overflow:hidden}.ruler{height:28px;margin-left:72px;border-bottom:1px solid var(--line);position:relative;background:repeating-linear-gradient(90deg,transparent 0 calc(10% - 1px),#30363c calc(10% - 1px) 10%)}.ruler:after{content:"00:00          00:05          00:10          00:15          00:20";position:absolute;inset:5px 0 0 7px;white-space:pre;font:9px monospace;color:#79838d;pointer-events:none}.track-row{height:48px;display:grid;grid-template-columns:72px minmax(0,1fr);border-bottom:1px solid #2c3238}.track-label{padding:15px 8px;font-size:10px;color:#aeb7bf;background:#1c2024;border-right:1px solid var(--line)}.track-lane{position:relative;width:max(100%,var(--timeline-width, 320px));min-width:320px;background:#f5f5f7}.clip{position:absolute;left:0;right:0;top:5px;height:36px;background:#1d514d;border:1px solid #347d76;border-radius:4px;display:none;overflow:hidden}.clip-title{position:absolute;left:10px;top:4px;font-size:10px;color:#d7eeeb;pointer-events:none;z-index:2}.clip input{position:absolute;bottom:0;width:50%;height:9px;accent-color:#78d9ce}.clip #inPoint{left:0}.clip #outPoint{right:0}.overlay-lane{display:flex;align-items:center;gap:5px;padding:5px}.lane-empty{font-size:10px;color:#56616a}.overlay-chip{height:24px;padding:4px 9px;border-radius:3px;background:#534126;color:#ecd4a5;font-size:10px}.playhead{position:absolute;z-index:4;left:72px;top:0;bottom:0;width:1px;background:#e6aa72;pointer-events:none}.playhead i{position:absolute;top:24px;left:-4px;width:9px;height:9px;border-radius:2px;background:#e6aa72;transform:rotate(45deg)}.scrubber{position:absolute;z-index:5;inset:0 0 0 72px;width:calc(100% - 72px);height:100%;opacity:0;cursor:crosshair}.inspector{border-left:1px solid var(--line);background:#191d21;padding:19px 16px 16px;overflow:auto}.panel-heading{display:flex;justify-content:space-between;align-items:center;padding-bottom:15px;border-bottom:1px solid var(--line)}h2{font-size:16px;margin:4px 0 0;font-weight:620}.revision-pill{font:10px monospace;border:1px solid var(--line);padding:4px 6px;border-radius:4px;color:#aeb7bf}.inspector-section{padding:15px 0;border-bottom:1px solid var(--line)}.inspector-section h3{font-size:11px;margin:0 0 11px;color:#bbc3ca;font-weight:650}.property-row{display:flex;justify-content:space-between;align-items:center;min-height:24px;font-size:11px;color:var(--muted);gap:12px}.property-row strong{color:#d2d9df;font-size:11px;font-weight:500;text-align:right;overflow-wrap:anywhere}.section-title{display:flex;justify-content:space-between;align-items:center}.section-title>span{font:10px monospace;color:var(--muted)}.safe-dot{color:var(--warn)!important}.overlay-list{display:grid;gap:5px}.empty-list{padding:10px;background:#1d2126;border-radius:4px;color:#707b85;font-size:10px}.overlay-item{display:flex;align-items:center;gap:7px;padding:7px;border:1px solid var(--line);border-radius:4px;background:#1d2126;font-size:10px}.overlay-item button{margin-left:auto;border:0;background:none;color:#8d969f}.mode-switch{display:grid;grid-template-columns:1fr 1fr;background:#131619;border-radius:5px;padding:3px}.mode-option{border:0;background:transparent;color:var(--muted);font-size:10px;padding:6px 3px;border-radius:3px}.mode-option.active{background:#333a40;color:#e2e7eb}.mode-note,.capability-note{font-size:10px;color:#7f8992;margin:8px 0 10px}.intent-box{display:grid;gap:7px}.intent-box label{font-size:10px;color:#aeb7bf}.intent-box textarea{resize:vertical;width:100%;background:#14181b;border:1px solid var(--line);border-radius:4px;padding:7px;font-size:11px;min-height:55px}.secondary-btn,.read-state-btn{width:100%;background:#2b3137;border:1px solid #3b434b;border-radius:4px;padding:7px;font-size:10px}.command-preview{margin-top:9px;padding:9px;background:#172522;border:1px solid #31544f;border-radius:4px;font-size:10px}.command-preview code{display:block;font:10px/1.4 monospace;color:#aad8d1;overflow-wrap:anywhere;margin:5px 0}.command-preview p{margin:4px 0;color:#aab6b7}.preview-actions{display:flex;gap:6px;margin-top:8px}.preview-actions button{flex:1;border-radius:4px;padding:6px;font-size:10px}.approve{border:0;background:var(--accent);color:#102321}.reject{border:1px solid var(--line);background:transparent}.audit-box{margin-top:9px;padding:7px;border-top:1px solid #2d343a;display:grid;gap:5px}.audit-box span{font-size:9px;color:#77818a}.audit-box code{font-size:9px;color:#9ab9b4;overflow-wrap:anywhere}.unknown{color:var(--warn)!important}.capability-section{border-bottom:0}.read-state-btn{margin-top:4px;color:#c6cdd3}.toast{position:fixed;left:50%;bottom:20px;transform:translate(-50%,10px);opacity:0;transition:opacity .18s,transform .18s;background:#2a3137;border:1px solid #434c54;border-radius:5px;padding:8px 13px;font-size:11px;pointer-events:none}.toast.show{opacity:1;transform:translate(-50%,0)}
+@media(max-width:850px){body{height:auto;min-height:100vh;overflow:auto}.workspace{height:auto;min-height:calc(100vh - 58px);grid-template-columns:1fr}.viewer-column{min-height:72vh;padding:12px}.inspector{border-left:0;border-top:1px solid var(--line);padding:15px 12px}.stage{min-height:42vh}.project-name{display:none}.topbar{padding:0 12px;gap:12px}.brand span{display:none}}
+.minimal-editor{color-scheme:light;--bg:#f5f5f7;--surface:#fff;--surface-2:#f5f5f7;--line:#d2d2d7;--text:#1d1d1f;--muted:#6e6e73;--accent:#0071e3;font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",sans-serif}.minimal-editor .topbar{background:#fff;gap:18px}.minimal-editor .workspace{display:block}.minimal-editor .viewer-column{height:100%;padding:24px}.minimal-editor .inspector,.minimal-editor .timeline-head,.minimal-editor .timeline{display:none}.minimal-editor .stage{border-radius:16px;box-shadow:0 4px 12px rgba(0,0,0,.08)}.io-menu{position:relative}.io-menu summary{list-style:none;cursor:pointer;color:#0071e3;padding:8px 18px;border-radius:999px;background:#f5f5f7;transition:transform 180ms cubic-bezier(.25,.1,.25,1)}.io-menu summary:active{transform:scale(.98)}.io-options{position:absolute;right:0;top:40px;background:#fff;border:1px solid #d2d2d7;padding:12px;border-radius:16px;z-index:20;min-width:160px;display:grid;gap:8px;box-shadow:0 4px 12px rgba(0,0,0,.08)}.io-options .icon-btn{color:#0071e3;justify-content:flex-start}.io-options .export-btn{background:#0071e3;color:#fff;border-radius:12px}.unavailable{color:#6e6e73;font-size:12px;padding:8px}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition-duration:.01ms!important}}
+
+/* 极简模式下叠加入口必须真实可点：保留按钮尺寸、可 Tab 聚焦、有 focus ring。 */
+.minimal-editor .transport-right{display:flex;align-items:center;gap:8px}
+.minimal-editor .transport-right .tool-btn{min-width:60px;height:39px;border:0;border-radius:999px;background:#f5f5f7;color:#0071e3;font-size:14px}
+.minimal-editor .transport-right .tool-btn:active{transform:scale(.98)}
+.minimal-editor .transport-right .tool-btn:focus-visible,.minimal-editor .transport-right label:focus-within{outline:2px solid #0071e3;outline-offset:2px}
+.overlay-composer{display:flex;gap:8px;align-items:center;padding:10px 0}
+.overlay-composer[hidden]{display:none}
+.overlay-composer input{flex:1;min-width:0;padding:10px 14px;border-radius:12px;border:1px solid var(--line);background:var(--surface);color:var(--text);font-size:14px}
+.overlay-composer input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.overlay-composer .export-btn{padding:10px 18px;border-radius:12px}
+/* 多轨时间线 */
+.timeline{position:relative;min-height:112px;overflow:hidden}
+.timeline-viewport{position:relative;max-height:210px;overflow:auto;overscroll-behavior:contain;scrollbar-gutter:stable;outline:none;scrollbar-color:#b8c0ca #f0f2f5;scrollbar-width:thin}
+.timeline-content{position:relative;min-width:100%;min-height:82px}
+.ruler{position:sticky;top:0;z-index:5;height:30px;margin-left:150px;background:#f8f9fb;border-bottom:1px solid var(--dsh-line);cursor:crosshair}
+.ruler-origin{position:absolute;left:-150px;top:0;width:150px;height:30px;padding:7px 10px;background:#fff;color:var(--dsh-ink-2);font-size:11px;border-right:1px solid var(--dsh-line)}
+.ruler-tick{position:absolute;top:0;height:30px;padding:3px 0 0 4px;border-left:1px solid rgba(0,0,0,.12);color:var(--dsh-ink-2);font:10px/1.2 ui-monospace,monospace;white-space:nowrap;pointer-events:none}
+.ruler-current{position:absolute;top:1px;z-index:2;transform:translateX(-50%);padding:2px 5px;border-radius:4px;background:var(--dsh-accent);color:#fff;font:10px/1.3 ui-monospace,monospace;white-space:nowrap;pointer-events:none}
+.track-list{display:grid;gap:1px;background:#2c3238}
+.timeline-content>.playhead{left:222px;top:0}
+.timeline-content>.playhead i{position:absolute;top:0;left:-5px;width:11px;height:11px;border-radius:50% 50% 50% 0;background:var(--dsh-danger);transform:rotate(-45deg)}
+.track-row{display:grid;grid-template-columns:150px minmax(0,1fr);min-width:max-content;min-height:44px;background:#171b1f}
+.track-row.active{outline:1px solid #0071e3;outline-offset:-1px}
+.track-head{position:sticky;left:0;z-index:4;display:flex;align-items:center;gap:6px;width:150px;min-width:150px;padding:6px 8px;border-right:1px solid var(--line);background:#fff}
+.track-kind{font-size:10px;padding:2px 6px;border-radius:6px;background:rgba(0,113,227,.12);color:#0071e3;flex:0 0 auto}
+.track-row.audio .track-kind{background:rgba(52,168,83,.14);color:#34a853}
+.track-name{font-size:11px;color:#1d1d1f;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.track-toggle{width:22px;height:22px;border-radius:6px;border:1px solid var(--line);background:transparent;color:#8d969f;font-size:10px}
+.track-toggle.on{background:#0071e3;border-color:#0071e3;color:#fff}
+.track-volume{width:56px;accent-color:#0071e3}
+.track-lane{position:relative;width:max(100%,var(--timeline-width, 320px));min-width:320px;background:#f5f5f7}
+.track-lane.drop-target{background:rgba(0,113,227,.12)}
+.track-clip{position:absolute;top:6px;height:32px;border:0;border-radius:8px;padding:0 8px;font-size:11px;color:#fff;background:#1d514d;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;cursor:grab;transition:transform 120ms cubic-bezier(.25,.1,.25,1)}
+.track-clip.audio{background:#2f6b3f}
+.track-clip.selected{box-shadow:0 0 0 2px #0071e3 inset}
+.track-clip.dragging{opacity:.85;cursor:grabbing;z-index:3}
+.minimal-editor .track-list,.minimal-editor .timeline{display:none}
+/* 字幕轨：与视频/音频区分色，轨道头仍带 M/S（字幕同样支持静音/独奏）。 */
+.track-row.text .track-kind { color: #7a5af8; }
+.track-row.text .track-lane { background: rgba(122, 90, 248, .06); }
+.track-clip.text { background: rgba(122, 90, 248, .18); border-color: rgba(122, 90, 248, .45); color: #4b32c3; }
+
+/* 导出入口必须可点击：顶栏是独立层叠上下文，下拉菜单要盖在工作区（含 .stage）之上，
+   否则 elementFromPoint 命中的是画布，真实鼠标点不到“导出 WebM”。 */
+.topbar { position: relative; z-index: 30; }
+.io-options { z-index: 40; }
+.stage { position: relative; z-index: 0; }
+
+/* 极简模式的导出入口：顶栏常驻按钮，普通文档流元素（可聚焦、可被真实鼠标命中），
+   不再藏在下拉面板里，避免被画布层抢走命中测试。 */
+.export-quick { display: none; }
+.minimal-editor .export-quick { display: inline-flex; align-items: center; flex: 0 0 auto; white-space: nowrap; }
+.minimal-editor .topbar { flex-wrap: wrap; row-gap: 6px; height: auto; min-height: 60px; }
+
+/* ===== 共享视觉规范 v1（docs/visual-spec.md）===== */
+:root{
+  color-scheme: light;
+  --dsh-bg:#f5f5f7; --dsh-surface:#ffffff; --dsh-ink:#1d1d1f; --dsh-ink-2:#6e6e73; --dsh-ink-3:#86868b;
+  --dsh-accent:#0071e3; --dsh-line:rgba(0,0,0,.08); --dsh-danger:#ff3b30; --dsh-success:#1d7a3c;
+  --dsh-r-sm:10px; --dsh-r-md:12px; --dsh-r-lg:16px; --dsh-r-full:999px;
+  /* 旧变量一律映射到规范 token，不新增第二套色值 */
+  --bg:var(--dsh-bg); --surface:var(--dsh-surface); --surface-2:var(--dsh-bg); --line:var(--dsh-line);
+  --text:var(--dsh-ink); --muted:var(--dsh-ink-2); --accent:var(--dsh-accent);
+  --accent-soft:rgba(0,113,227,.08); --warn:#b25000; --danger:var(--dsh-danger); --radius:var(--dsh-r-md);
+  font:13px/1.5 -apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI","Microsoft YaHei",sans-serif;
+}
+body{background:var(--dsh-bg);color:var(--dsh-ink)}
+.topbar{background:var(--dsh-surface);height:60px;border-bottom:1px solid var(--dsh-line);gap:24px;padding:0 24px}
+.workspace{height:calc(100vh - 60px)}
+.brand{color:var(--dsh-ink)}.brand span{color:var(--dsh-ink-3)}
+.project-name strong{font-size:13px}.project-name small{font-size:11px;color:var(--dsh-ink-2)}
+.icon-btn,.tool-btn{color:var(--dsh-ink-2);border-radius:var(--dsh-r-sm);min-width:36px;height:36px}
+.icon-btn:hover,.tool-btn:hover{background:rgba(0,0,0,.05);border-color:transparent}
+.export-btn,.primary-btn{background:var(--dsh-accent);color:#fff;border-radius:var(--dsh-r-full);padding:10px 16px;font-weight:600}
+.export-btn:hover,.primary-btn:hover{background:#0077ed}
+.export-btn:active,.primary-btn:active{transform:scale(.96)}
+button{transition:background 180ms cubic-bezier(.25,.1,.25,1),transform 180ms cubic-bezier(.25,.1,.25,1)}
+button:active{transform:scale(.98)}
+button:disabled{opacity:.5;cursor:not-allowed;transform:none}
+:focus-visible{outline:2px solid var(--dsh-accent);outline-offset:2px}
+.eyebrow{color:var(--dsh-ink-3)}
+.viewer-head #mediaLabel{color:var(--dsh-ink-2)}
+.live-state{color:var(--dsh-ink-2)}
+.stage{background:#fff;border:1px solid var(--dsh-line);border-radius:var(--dsh-r-lg);box-shadow:0 4px 12px rgba(0,0,0,.08)}
+.transport{border-bottom:1px solid var(--dsh-line)}
+.round-btn{background:var(--dsh-bg);border:1px solid var(--dsh-line);border-radius:var(--dsh-r-full)}
+.timeline{background:var(--dsh-surface);border:1px solid var(--dsh-line);border-radius:var(--dsh-r-md)}
+.timeline-title{color:var(--dsh-ink)}.timeline-title span{color:var(--dsh-ink-2)}
+.text-btn{color:var(--dsh-accent);border-radius:var(--dsh-r-sm);padding:6px 10px}
+.text-btn:disabled{color:var(--dsh-ink-3)}
+.track-row{border-bottom:1px solid var(--dsh-line)}
+.track-head{color:var(--dsh-ink-2)}
+.track-lane{background:var(--dsh-bg)}
+.track-clip{background:rgba(0,113,227,.14);color:#0b57b3;border:1px solid rgba(0,113,227,.35);border-radius:var(--dsh-r-sm)}
+.track-clip.selected{border-color:var(--dsh-accent)}
+.track-toggle{color:var(--dsh-ink-2);border-radius:var(--dsh-r-sm)}
+.track-toggle.on{background:rgba(0,113,227,.12);color:var(--dsh-accent)}
+.inspector{background:var(--dsh-surface);border-left:1px solid var(--dsh-line)}
+.revision-pill{border:1px solid var(--dsh-line);color:var(--dsh-ink-2);border-radius:var(--dsh-r-sm)}
+.inspector-section{border-bottom:1px solid var(--dsh-line)}
+.property-row{color:var(--dsh-ink-2)}.property-row strong{color:var(--dsh-ink)}
+.overlay-item,.empty-list{background:var(--dsh-bg);border:1px solid var(--dsh-line);border-radius:var(--dsh-r-sm);color:var(--dsh-ink-2)}
+.mode-switch{background:var(--dsh-bg)}.mode-option{color:var(--dsh-ink-2);border-radius:var(--dsh-r-sm)}
+.mode-option.active{background:var(--dsh-surface);color:var(--dsh-ink)}
+.toast{background:var(--dsh-surface);border:1px solid var(--dsh-line);color:var(--dsh-ink);border-radius:var(--dsh-r-md);box-shadow:0 4px 12px rgba(0,0,0,.08)}
+.io-options{background:var(--dsh-surface);border:1px solid var(--dsh-line);border-radius:var(--dsh-r-lg);box-shadow:0 4px 12px rgba(0,0,0,.08)}
+.minimal-editor .stage{box-shadow:0 4px 12px rgba(0,0,0,.08)}
+@media (prefers-reduced-motion: reduce){*{transition:none!important;animation:none!important;transform:none!important}}
+
+/* 视频编辑器必须显示时间轴：多轨与播放头是核心界面，minimal 外壳不能把它们藏掉。
+   只隐藏右侧检查器，保留时间轴头与轨道区。 */
+.minimal-editor .timeline-head,
+.minimal-editor .timeline,
+.minimal-editor .track-list { display: revert; }
+.minimal-editor .timeline-head { display: flex; }
+.minimal-editor .timeline { display: block; }
+.minimal-editor .track-list { display: block; }
+.minimal-editor .inspector { display: none; }
+.minimal-editor .workspace { display: block; height: auto; }
+.minimal-editor .viewer-column { height: auto; }
+.clip-highlight { outline: 2px solid var(--dsh-accent); outline-offset: 1px; animation: clip-pulse .5s ease-in-out 2; }
+@keyframes clip-pulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(0, 113, 227, .35); } 50% { box-shadow: 0 0 0 6px rgba(0, 113, 227, 0); } }
+
+/* 版本徽标：值来自 package.json（服务端注入 __DSH_STUDIO_VERSION__），不在页面里手写第二份。 */
+.studio-version {
+  font: 10px/1 ui-monospace, SFMono-Regular, Menlo, monospace;
+  letter-spacing: .08em;
+  color: var(--muted);
+  padding: 4px 9px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--surface-2);
+  white-space: nowrap;
+}
+.minimal-editor .studio-version { border-color: #d2d2d7; background: #f5f5f7; color: #6e6e73; }
+/* 窄窗口也必须看得到版本：只收窄内边距，不隐藏。 */
+@media(max-width:850px){ .studio-version { padding: 3px 7px; } }
