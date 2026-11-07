@@ -1,6 +1,19 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { MAX_PIXELS_PER_SECOND, MIN_PIXELS_PER_SECOND, snapTime, timeAtTimelineX, timecodeTicks, timelineWidth } from '../public/video/timeline-geometry.mjs';
+import { readFile } from 'node:fs/promises';
+const editorHtml = await readFile(new URL('../public/video/index.html', import.meta.url), 'utf8');
+const editorCss = await readFile(new URL('../public/video/video.css', import.meta.url), 'utf8');
+
+test('ComeCut-style editor dock has unique timeline IDs and a contained 16:7 preview stage', () => {
+  for (const id of ['timelineDock', 'timeline', 'timelineViewport', 'timelineContent', 'ruler', 'trackList', 'playhead', 'video', 'overlayCanvas']) {
+    assert.equal((editorHtml.match(new RegExp(`id="${id}"`, 'g')) || []).length, 1, `${id} must have one owner`);
+  }
+  assert.match(editorHtml, /class="timeline-dock"[\s\S]*id="timeline"/);
+  assert.match(editorCss, /grid-template-rows:minmax\(0,1fr\) auto/);
+  assert.match(editorCss, /#video,.minimal-editor #overlayCanvas\{[^}]*object-fit:contain/);
+  assert.match(editorCss, /\.timeline-dock\{grid-column:1 \/ -1;grid-row:2/);
+});
 
 test('timeline width clamps zoom and preserves a usable empty viewport', () => {
   assert.equal(timelineWidth(0, 64, 480), 480);
