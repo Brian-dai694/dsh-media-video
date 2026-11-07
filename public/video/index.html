@@ -14,12 +14,20 @@
     <span class="studio-version" id="studioVersion" title="编辑器版本（来自 package.json）">v__DSH_STUDIO_VERSION__</span>
     <div class="top-actions">
     <button type="button" id="exportQuick" class="export-btn export-quick">导出 WebM</button>
-      <details class="io-menu"><summary>导入</summary><div class="io-options"><label class="icon-btn">视频文件<input id="videoInput" type="file" accept="video/*" hidden></label><button class="icon-btn" id="openProject">打开工程</button><label class="icon-btn">叠加图片<input id="overlayImageInput" type="file" accept="image/*" hidden></label></div></details>
+      <details class="io-menu"><summary>导入</summary><div class="io-options"><label class="icon-btn">视频文件<input id="videoInput" type="file" accept="video/*" multiple hidden></label><button class="icon-btn" id="openProject">打开工程</button><label class="icon-btn">叠加图片<input id="overlayImageInput" type="file" accept="image/*" hidden></label></div></details>
       <input id="projectInput" type="file" accept="application/json,.json" hidden>
       <details class="io-menu"><summary>导出</summary><div class="io-options"><button class="icon-btn" id="saveProject">保存工程</button><button class="export-btn" id="exportVideo" disabled>导出 WebM</button><span class="unavailable">MP4 未验证</span></div></details>
     </div>
   </header>
   <main class="workspace">
+    <aside class="media-library" aria-label="项目素材库">
+      <div class="library-head"><strong>媒体素材</strong><span id="mediaCount">0</span></div>
+      <label class="library-import">＋ 导入媒体<input id="libraryMediaInput" type="file" accept="video/*,audio/*" multiple hidden></label>
+      <label class="library-search"><span aria-hidden="true">⌕</span><input id="mediaSearch" type="search" placeholder="搜索素材" aria-label="搜索素材"></label>
+      <div class="library-tabs" role="tablist" aria-label="素材类别"><button type="button" class="active" data-media-filter="all" role="tab" aria-selected="true">全部</button><button type="button" data-media-filter="video" role="tab" aria-selected="false">视频</button><button type="button" data-media-filter="audio" role="tab" aria-selected="false">音频</button></div>
+      <div class="media-library-list" id="mediaLibraryList" role="list"><div class="library-empty">导入视频或音频后，素材会显示在这里</div></div>
+      <div class="library-footer">本地媒体 · 不上传</div>
+    </aside>
     <section class="viewer-column">
       <div class="viewer-head"><div class="viewer-heading"><strong>预览</strong><span id="mediaLabel">尚未导入媒体</span></div><span class="live-state"><i></i><span id="capabilityLabel">本地编辑</span></span></div>
       <div class="stage" id="stage">
@@ -41,7 +49,7 @@
         <div class="timeline-label"><span>轨道</span><span>点击标尺定位，拖动片段调整顺序</span></div>
         <div class="timeline-viewport" id="timelineViewport" role="group" aria-label="多轨时间线；使用左右方向键以0.1秒步进移动播放头，按住 Shift 为1秒">
           <div class="timeline-content" id="timelineContent">
-            <div class="timeline-empty" id="timelineEmpty"><span class="timeline-empty-mark">⌁</span><strong>时间线已就绪</strong><span>导入视频，或添加视频轨并开始排列片段</span><label for="videoInput">导入视频</label></div>
+            <div class="timeline-empty" id="timelineEmpty"><span class="timeline-empty-mark">⌁</span><strong>把素材拖到这里，开始剪辑</strong><span>或点击素材库中的视频/音频添加到时间线</span></div>
             <div class="ruler" id="ruler"></div>
             <div class="track-list" id="trackList"></div>
             <div id="overlayLane" hidden></div>

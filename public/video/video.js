@@ -85,6 +85,7 @@ function render({ timeline = true } = {}) {
   $('webmCapability').textContent = webmCapability.status === 'available' ? `可用 (${webmCapability.mimeType})` : webmCapability.status === 'checking' ? '检测中' : '不可用'; $('webmCapability').className = webmCapability.status === 'available' ? '' : 'unknown'; $('webmCapability').title = webmCapability.reason;
   const hasMedia = media.size > 0;
   $('emptyStage').hidden = hasMedia; $('video').style.display = hasMedia ? 'block' : 'none';
+  renderMediaLibrary();
   if (item) {
     $('inPoint').max = Math.floor(item.duration * 100); $('outPoint').max = Math.floor(item.duration * 100);
     $('inPoint').value = Math.floor(item.in * 100); $('outPoint').value = Math.floor(item.out * 100);
@@ -340,7 +341,9 @@ function resolveMediaDuration(video) {
     try { video.currentTime = 1e7; } catch { finish(NaN); }
   });
 }
-const media = new Map(); // sourceRef → { element, kind, url }
+const media = new Map(); // sourceRef → { element, kind, url, fileName, size }
+let mediaFilter = 'all';
+let mediaQuery = '';
 function mediaFor(ref) {
   return ref ? media.get(ref)?.element ?? null : null;
 }
@@ -350,8 +353,41 @@ function attachMedia(ref, file, kind) {
   element.playsInline = true;
   element.dataset.sourceRef = ref;
   $('mediaPool').appendChild(element);
-  media.set(ref, { element, kind, url: URL.createObjectURL(file) });
+  media.set(ref, { element, kind, url: URL.createObjectURL(file), fileName: file.name, size: file.size });
   return element;
+}
+function renderMediaLibrary() {
+  const rows = [...media.entries()].map(([sourceRef, entry]) => ({ sourceRef, ...entry, clips: allClips().filter(item => item.sourceRef === sourceRef) }));
+  $('mediaCount').textContent = String(rows.length);
+  const visible = rows.filter(item => (mediaFilter === 'all' || item.kind === mediaFilter) && item.fileName.toLowerCase().includes(mediaQuery.toLowerCase()));
+  $('mediaLibraryList').innerHTML = visible.length ? visible.map(item => {
+    const attached = item.clips.length > 0;
+    const kindLabel = item.kind === 'audio' ? '音频' : '视频';
+    const duration = item.clips[0]?.duration;
+    const meta = `${kindLabel}${duration ? ' · ' + format(duration).slice(0, 5) : ''}${attached ? ' · 已使用' : ''}`;
+    return `<button type="button" class="media-item${attached ? ' attached' : ''}" data-media-ref="${escapeHtml(item.sourceRef)}" aria-label="将 ${escapeHtml(item.fileName)} 添加到时间线">
+      <span class="media-thumb ${item.kind}">${item.kind === 'audio' ? '♫' : '▶'}</span>
+      <span class="media-item-copy"><strong title="${escapeHtml(item.fileName)}">${escapeHtml(item.fileName)}</strong><small>${meta}</small></span>
+      <span class="media-add" aria-hidden="true">＋</span>
+    </button>`;
+  }).join('') : `<div class="library-empty">${rows.length ? '没有符合筛选条件的素材' : '导入媒体后，会列在这里'}</div>`;
+}
+async function addMediaToTimeline(sourceRef) {
+  const entry = media.get(sourceRef);
+  if (!entry) return;
+  if (entry.kind === 'audio') {
+    let track = project().tracks.find(item => item.id === selectedTrackId && item.kind === 'audio') || project().tracks.find(item => item.kind === 'audio');
+    if (!track) { apply({ type: 'media.video.track.add', track: { kind: 'audio' } }); track = project().tracks.find(item => item.kind === 'audio'); }
+    const element = entry.element;
+    const duration = await resolveMediaDuration(element);
+    if (!Number.isFinite(duration) || duration <= 0) return toast('音频时长无效，无法加入时间线');
+    try { apply({ type: 'media.video.clip.add', clip: { id: crypto.randomUUID(), sourceRef, name: entry.fileName, duration, trackId: track.id, start: project().timeline.currentTime } }); }
+    catch (error) { toast(`添加音频失败：${error?.message || '无法添加'}`); }
+    return;
+  }
+  const existing = allClips().find(item => item.sourceRef === sourceRef && item.trackKind === 'video');
+  if (existing) { timelineSeek(existing.start); return toast('该视频已在时间线上，已定位到片段'); }
+  await importVideoImpl(new File([await (await fetch(entry.url)).blob()], entry.fileName, { type: entry.element.type || 'video/mp4' }));
 }
 // 导入过程中任何一步抛错都必须变成可见的提示：早先 change 处理没有 catch，而桌面端
 // 非安全上下文里 crypto.subtle 缺失，异常变成未捕获的 Promise 拒绝，界面看起来就是
@@ -454,6 +490,7 @@ function openSnapshot(file) {
         for (const entry of media.values()) { try { entry.element.pause(); } catch { /* detached */ } URL.revokeObjectURL(entry.url); }
         media.clear(); attachedMediaRef = null;
         $('video').removeAttribute('src'); $('video').load();
+        renderMediaLibrary();
       }
       $('projectName').textContent = saved.project.source?.name?.replace(/\.[^.]+$/, '') || '未命名工程';
       render();
@@ -508,10 +545,28 @@ function exportWebm() {
 }
 
 for (const inputId of ['videoInput', 'emptyVideoInput']) $(inputId).addEventListener('change', event => {
-  const file = event.currentTarget.files?.[0];
+  const files = [...(event.currentTarget.files || [])];
   event.currentTarget.value = '';
-  // importVideo 自己已兜底，这里再挂一层是为了任何未被 await 的路径都不会变成静默失败。
-  importVideo(file).catch(error => toast(`导入失败：${error?.message || '未知原因'}`));
+  for (const file of files) importVideo(file).catch(error => toast(`导入失败：${error?.message || '未知原因'}`));
+});
+$('libraryMediaInput').addEventListener('change', event => {
+  const files = [...(event.currentTarget.files || [])];
+  event.currentTarget.value = '';
+  for (const file of files) importVideo(file).catch(error => toast(`导入失败：${error?.message || '未知原因'}`));
+});
+$('mediaSearch').addEventListener('input', event => { mediaQuery = event.currentTarget.value.trim(); renderMediaLibrary(); });
+for (const tab of document.querySelectorAll('[data-media-filter]')) tab.addEventListener('click', () => {
+  mediaFilter = tab.dataset.mediaFilter;
+  for (const button of document.querySelectorAll('[data-media-filter]')) {
+    const active = button === tab;
+    button.classList.toggle('active', active);
+    button.setAttribute('aria-selected', active ? 'true' : 'false');
+  }
+  renderMediaLibrary();
+});
+$('mediaLibraryList').addEventListener('click', event => {
+  const item = event.target.closest('[data-media-ref]');
+  if (item) addMediaToTimeline(item.dataset.mediaRef).catch(error => toast(`添加素材失败：${error?.message || '未知原因'}`));
 });
 function addOverlayImage(file) {
   if (!file) return;
