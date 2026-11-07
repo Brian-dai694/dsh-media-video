@@ -27,6 +27,22 @@ test('video helper prompts are local suggestions for the DSH conversation', () =
   assert.equal(typeof plugin.chat.sendPrompt, 'function');
 });
 
+test('assistant suggestions are progressively disclosed without changing send behavior', () => {
+  assert.equal(plugin.chat.suggestionsFor(false).length, 3);
+  assert.equal(plugin.chat.suggestionsFor(true).length, 6);
+  assert.deepEqual(Array.from(plugin.chat.suggestionsFor(false)), Array.from(plugin.chat.videoSuggestions.slice(0, 3)));
+});
+
+test('chat CSS installs once and is safe when the document is unavailable', () => {
+  assert.equal(plugin.chat.installChatStyles(null), false);
+  const styles = new Map();
+  const head = { appendChild(node) { styles.set(node.id, node); } };
+  const doc = { head, createElement() { return { id: '', textContent: '' }; }, getElementById(id) { return styles.get(id) || null; } };
+  assert.equal(plugin.chat.installChatStyles(doc), true);
+  assert.equal(plugin.chat.installChatStyles(doc), false);
+  assert.match(styles.get('media-video-chat-layout').textContent, /\.mv-chat-suggestions/);
+});
+
 test('ComeCut-inspired assistant starters cover editing, audio, subtitles, and a no-write plan', () => {
   const suggestions = plugin.chat.videoSuggestions;
   assert.ok(suggestions.some(text => text.includes('音量')));
